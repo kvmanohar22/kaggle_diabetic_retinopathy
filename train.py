@@ -57,6 +57,7 @@ chunk_size = model.chunk_size
 batch_size = model.batch_size
 num_chunks_train = model.num_chunks_train  # 5000
 validate_every = model.validate_every  # 50
+
 if hasattr(model, 'output_every'):
     output_every = model.output_every
 else:

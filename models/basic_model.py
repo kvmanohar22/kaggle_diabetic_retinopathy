@@ -19,7 +19,7 @@ from losses import (log_loss,
                     quad_kappa_log_hybrid_loss_clipped)
 
 # Main dir used to load files.
-base_dir = os.path.join(os.path.abspath(os.path.dirname(__file__)), '..')
+base_dir = '/users/Datasets/Kaggle-DiabeticRetinopathy/data/'
 
 output_size = 512  # 120
 batch_size = 64  # * 2  # * 4
@@ -29,8 +29,11 @@ num_channels = 3
 
 config_name = 'local_normal_' + str(output_size)
 
-prefix_train = '/media/user/Extended_ext4/train_ds2_crop/'
-prefix_test = '/media/user/Extended_ext4/test_ds2_crop/'
+# prefix_train = '/media/user/Extended_ext4/train_ds2_crop/'
+# prefix_test = '/media/user/Extended_ext4/test_ds2_crop/'
+prefix_train = '/users/Datasets/Kaggle-DiabeticRetinopathy/data/train/train/'
+prefix_test = '/users/Datasets/Kaggle-DiabeticRetinopathy/data/test/test/'
+
 
 # (       image
 #  level
@@ -275,12 +278,14 @@ def build_model():
     layers.append(l_pool)
 
     layers.append(nn.layers.DropoutLayer(layers[-1], p=0.5))
+
     layers.append(DenseLayer(layers[-1],
                              nonlinearity=None,
                              num_units=1024,
                              W=nn.init.Orthogonal(1.0),
                              b=nn.init.Constant(0.1),
                              name='first_fc_0'))
+
     l_pool = nn.layers.FeaturePoolLayer(layers[-1],
                                         pool_size=2,
                                         pool_function=T.max)
@@ -288,6 +293,7 @@ def build_model():
 
     l_first_repr = layers[-1]
 
+    # combining images of both the eyes ?
     l_coarse_repr = nn.layers.concat([l_first_repr,
                                       l_in_imgdim])
     layers.append(l_coarse_repr)
@@ -327,7 +333,7 @@ def build_model():
     l_ins = [l_in1, l_in_imgdim]
 
     return l_out, l_ins
-
+# end of the model
 
 config_name += '_' + obj_loss
 
@@ -377,7 +383,7 @@ def build_objective(l_out, loss_function=loss_function,
     return nn.objectives.Objective(l_out, loss_function=loss)
 
 
-train_labels = p.read_csv(os.path.join(base_dir, 'data/trainLabels.csv'))
+train_labels = p.read_csv(os.path.join(base_dir, 'trainLabels.csv'))
 labels_split = p.DataFrame(list(train_labels.image.str.split('_')),
                            columns=['id', 'eye'])
 labels_split['level'] = train_labels.level
