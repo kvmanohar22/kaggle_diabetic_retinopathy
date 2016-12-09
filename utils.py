@@ -57,6 +57,7 @@ def split_data(train_labels, labels_split, valid_size=20,
     if valid_size >= 100:
         return None
 
+    # represents the number of training examples '35126'
     num_all = len(train_labels)
 
     np.random.seed(SEED)
@@ -183,12 +184,13 @@ def get_img_ids_from_dir(img_dir):
     test_fns = glob.glob(os.path.join(img_dir, "*.jpeg"))
     return get_img_ids_from_iter(test_fns)
 
-
+# softmax function
 def softmax(ar, temp=1):
     e = np.exp(ar / temp)
     return e / e.sum(axis=1)[:, None]
 
 
+# used to print the architecture of the model
 def architecture_string(layer):
     model_arch = ''
 

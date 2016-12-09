@@ -19,7 +19,7 @@ from losses import (log_loss,
                     quad_kappa_log_hybrid_loss_clipped)
 
 # Main dir used to load files.
-base_dir = '/users/Datasets/Kaggle-DiabeticRetinopathy/data/'
+base_dir = '/users/TeamDiabeticRetinopathy/'
 
 output_size = 512  # 120
 batch_size = 64  # * 2  # * 4
@@ -97,7 +97,9 @@ switch_chunk = 60 * num_chunks_train // 100
 
 leakiness = 0.5
 
-obj_loss = 'kappalogclipped'
+# """ CHANGING THE LOSS FUNCTION TO LOG """
+# obj_loss = 'kappalogclipped'
+obj_loss = 'log'
 y_pow = 1
 
 # Kappalog
@@ -384,6 +386,8 @@ def build_objective(l_out, loss_function=loss_function,
 
 
 train_labels = p.read_csv(os.path.join(base_dir, 'trainLabels.csv'))
+
+# splits the data into patient id and their corresponding eye
 labels_split = p.DataFrame(list(train_labels.image.str.split('_')),
                            columns=['id', 'eye'])
 labels_split['level'] = train_labels.level
@@ -409,7 +413,9 @@ id_train, y_train, id_valid, y_valid = split_data(train_labels, labels_split,
 #  3      0.024853
 #  4      0.020156)
 
-pl_enabled = True
+# what's pl_enabled doing here?
+# pl_enabled = True
+pl_enabled = False
 pl_softmax_temp = 2
 pl_train_coef = 5
 
@@ -433,10 +439,12 @@ if pl_enabled:
 
     print test_preds[:10], '\n'
 
+    # test_preds if greater than zero than do log probs
     if np.mean(test_preds) > 0:
         # These are not log probs, so can do log.
         test_preds = np.log(1e-5 + test_preds)
 
+    # apply softmax on the predictions
     test_probs = softmax(test_preds, temp=pl_softmax_temp)
 
     # Double ids so only every other.
