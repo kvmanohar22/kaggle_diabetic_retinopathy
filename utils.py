@@ -71,11 +71,11 @@ def split_data(train_labels, labels_split, valid_size=20,
 
             sss = StratifiedShuffleSplit(label_pairs.values, n_iter=1,
                                          test_size=0.01 * valid_size,
-                                         indices=None, random_state=SEED)
+                                         random_state=SEED)
         else:
             sss = StratifiedShuffleSplit(train_labels.level, n_iter=1,
                                          test_size=0.01 * valid_size,
-                                         indices=None, random_state=SEED)
+                                         random_state=SEED)
         for ix_train, ix_test in sss:
             pass
             # TODO: has no next(), need to figure this out
