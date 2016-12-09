@@ -42,6 +42,7 @@ prefix_test = model.prefix_test if hasattr(model, 'prefix_test') else \
 
 SEED = model.SEED if hasattr(model, 'SEED') else 11111
 
+# read data
 id_train, y_train = model.id_train, model.y_train
 id_valid, y_valid = model.id_valid, model.y_valid
 id_train_oversample = model.id_train_oversample,
@@ -50,8 +51,8 @@ labels_train_oversample = model.labels_train_oversample
 sample_coefs = model.sample_coefs if hasattr(model, 'sample_coefs') \
     else [0, 7, 3, 22, 25]
 
+# model function
 l_out, l_ins = model.build_model()
-# l_ins = model.l_ins
 
 chunk_size = model.chunk_size
 batch_size = model.batch_size
@@ -66,6 +67,7 @@ else:
 save_every = model.save_every  # 100
 lr_decay = model.lr_decay if hasattr(model, 'lr_decay') else None
 
+# doesn't have the attribute
 if lr_decay:
     lr_init = model.lr_init
     lr_final = model.lr_final
@@ -78,8 +80,9 @@ np.set_printoptions(suppress=True)
 model_id = strftime("%Y_%m_%d_%H%M%S", gmtime())
 
 
-dump_path = 'dumps/' + model_id + '_' + model.config_name + '.pkl'
+dump_path = '/' + model_id + '_' + model.config_name + '.pkl'
 
+# prints the architecture of the model
 model_arch = architecture_string(l_out)
 print model_arch
 
